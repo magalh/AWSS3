@@ -40,8 +40,8 @@ class AWSS3 extends CMSModule
 	public function HasAdmin() { return TRUE; }
 	public function GetHeaderHTML() { return $this->_output_header_assets(); }
 	public function VisibleToAdminUser() { return $this->CheckPermission(self::MANAGE_PERM); }
-	public function GetAuthor() { return 'Magal Hezi'; }
-	public function GetAuthorEmail() { return 'h_magal@hotmail.com'; }
+    public function GetAuthor() { return 'Pixel Solutions'; }
+    public function GetAuthorEmail() { return 'info@pixelsolutions.biz'; }
 	public function UninstallPreMessage() { return $this->Lang('ask_uninstall'); }
 	public function GetAdminSection() { return 'content'; }
     public function MinimumCMSVersion() { return '2.2.1'; }
@@ -107,7 +107,7 @@ class AWSS3 extends CMSModule
 	 }
 	
 	public function GetHelp() { return @file_get_contents(__DIR__.'/README.md'); }
-	public function GetChangeLog() { return @file_get_contents(__DIR__.'/doc/changelog.inc'); }
+	public function GetChangeLog() { return @file_get_contents(__DIR__.'/CHANGELOG.md'); }
 
 	protected function _output_header_assets()
     {

@@ -5,3 +5,8 @@ error_log
 .dwsync.xml
 .vscode/
 moduleinfo.ini
+
+releases/
+build.sh
+composer.json
+composer.lock
