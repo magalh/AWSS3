@@ -1,9 +1,6 @@
 <?php
 if (!isset($gCms)) exit;
 
-include_once(dirname(__FILE__) . '/lib/class.ModuleTracker.php');
-AWSS3\ModuleTracker::track('AWSS3', 'upgrade');
-
 $db = $this->GetDb();
 
 $uid = 1; // hardcode to first user
@@ -55,4 +52,6 @@ if( version_compare($oldversion,'1.1.1') <= 0 ) {
 
 }
 
+include_once(dirname(__FILE__) . '/lib/class.ModuleTracker.php');
+AWSS3\ModuleTracker::track('AWSS3', 'upgrade');
 ?>

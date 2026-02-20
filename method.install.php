@@ -29,9 +29,6 @@
 
 if( !defined('CMS_VERSION') ) exit;
 
-include_once(dirname(__FILE__) . '/lib/class.ModuleTracker.php');
-AWSS3\ModuleTracker::track('AWSS3', 'install');
-
 $this->CreatePermission(AWSS3::MANAGE_PERM,'Manage AWSS3');
 
 $uid = null;
@@ -156,5 +153,8 @@ try {
 $this->SetPreference('allowed', 'jpg,jpeg,gif,png');
 $this->SetPreference('itemsdisplayed', '25');
 $this->AddEventHandler('Core', 'ContentPostRender', false);
+
+include_once(dirname(__FILE__) . '/lib/class.ModuleTracker.php');
+AWSS3\ModuleTracker::track('AWSS3', 'install');
 
 ?>

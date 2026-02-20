@@ -29,9 +29,6 @@
 
 if( !defined('CMS_VERSION') ) exit;
 
-include_once(dirname(__FILE__) . '/lib/class.ModuleTracker.php');
-AWSS3\ModuleTracker::track('AWSS3', 'uninstall');
-
 $this->RemovePermission(AWSS3::MANAGE_PERM);
 
 $this->DeleteTemplate('displaysummary');
@@ -61,4 +58,6 @@ try {
 
   $this->RemoveEventHandler('Core', 'ContentPostRender');
   
+  include_once(dirname(__FILE__) . '/lib/class.ModuleTracker.php');
+  AWSS3\ModuleTracker::track('AWSS3', 'uninstall');
 ?>
