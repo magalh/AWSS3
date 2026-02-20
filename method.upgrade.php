@@ -1,5 +1,9 @@
 <?php
 if (!isset($gCms)) exit;
+
+include_once(dirname(__FILE__) . '/lib/class.ModuleTracker.php');
+AWSS3\ModuleTracker::track('AWSS3', 'upgrade');
+
 $db = $this->GetDb();
 
 $uid = 1; // hardcode to first user

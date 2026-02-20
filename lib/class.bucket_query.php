@@ -139,10 +139,7 @@ final class bucket_query
                 $listing['items'] = array_merge($listing['items'], $this->FetchAll($result));
                 $items++;
             }
-
-            //print_r($listing['items']);
-            //utils::sortByProperty($listing['items'], 'date');
-            $listing['items'] = utils::sortByDateDesc($listing['items']);
+            utils::sortByProperty($listing['items'], 'name');
 
             $indicesToMove = [];
             for ($i = 0; $i < count($listing['items']); $i++) {
@@ -152,7 +149,7 @@ final class bucket_query
                 utils::moveItemsToBeginningByIndex($listing['items'], $indicesToMove);
             }
             $listing['total'] = count($listing['items']);  
-
+            
         } catch (AwsException $e) {
             if($e->getStatusCode() == 404){
                 $error_message = $bucket_id." ".$e->getAwsErrorMessage();
@@ -196,6 +193,11 @@ final class bucket_query
         }
 
         foreach( $rs['Contents'] as $row ) {
+
+                // Skip folder marker objects (they end with / and have size 0)
+                if (substr($row['Key'], -1) === '/' && $row['Size'] == 0) {
+                    continue;
+                }
 
                 $onerow = new \stdClass();
                 $onerow->key = $row['Key'];

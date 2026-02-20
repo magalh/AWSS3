@@ -1,18 +1,38 @@
-<h3>{$mod->Lang('getstarted')}:</h3>
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0px;">
+  <h3 style="margin:0;">{$mod->Lang('getstarted')}</h3>
+  <a href="https://pixelsolutions.biz" target="_blank" rel="noopener noreferrer">
+    <img src="https://pixelsolution.s3.eu-south-1.amazonaws.com/logos/LOGO_3_COLOR_300.png" alt="Pixel Solutions" style="height:40px;" />
+  </a>
+</div>
 
 {if isset($message)}{$message}{/if}
 
 {form_start}
 <div class="pageoverflow">
+ <p class="pagetext">{$mod->Lang('auth_method')}:</p>
+ <p class="pageinput">
+    <select name="{$actionid}settings_input[auth_method]">
+      <option value="credentials" {if $mod->GetOptionValue("auth_method") == "credentials"}selected{/if}>{$mod->Lang('auth_credentials')}</option>
+      <option value="iam_role" {if $mod->GetOptionValue("auth_method") == "iam_role"}selected{/if}>{$mod->Lang('auth_iam_role')}</option>
+    </select>
+    <br/>
+    <small>{$mod->Lang('help_auth_method')}</small>
+ </p>
+</div>
+<div class="pageoverflow">
  <p class="pagetext">{$mod->Lang('access_key')}:&nbsp;{cms_help key2='help_access_key' title=$mod->Lang('access_key')}</p>
  <p class="pageinput">
     <input type="text" name="{$actionid}settings_input[access_key]" value="{$mod->GetOptionValue("access_key")}" size="50" maxlength="50"/>
+    <br/>
+    <small>{$mod->Lang('help_auth_credentials_only')}</small>
  </p>
 </div>
 <div class="pageoverflow">
  <p class="pagetext">{$mod->Lang('access_secret_key')}:</p>
  <p class="pageinput">
     <input type="text" name="{$actionid}settings_input[access_secret_key]" value="{$mod->GetOptionValue("access_secret_key")}" size="50" maxlength="50"/>
+    <br/>
+    <small>{$mod->Lang('help_auth_credentials_only')}</small>
  </p>
 </div>
 <div class="pageoverflow">

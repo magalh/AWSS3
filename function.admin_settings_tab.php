@@ -45,9 +45,13 @@ if( isset($params['submit']) ) {
         }
     }
 
-    if($ready){
-        $this->RedirectToAdminTab($params['bucket_name']);
+    // Re-validate after saving settings
+    $s3_utils = new utils();
+    if($s3_utils->validate()){
+        $this->SetMessage($this->Lang('settings_saved'));
+        $this->RedirectToAdminTab($this->GetOptionValue('bucket_name'));
     } else {
+        $this->SetError($this->Lang('settings_validation_failed'));
         $this->RedirectToAdminTab('settings');
     }
 }

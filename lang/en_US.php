@@ -9,6 +9,11 @@ $lang['author_label'] = 'Posted by:';
 $lang['access_region'] = 'Region';
 $lang['access_key'] = 'AWS Access Key ID';
 $lang['access_secret_key'] = 'AWS Secret Access Key';
+$lang['auth_method'] = 'Authentication Method';
+$lang['auth_credentials'] = 'Saved Credentials (Access Key/Secret)';
+$lang['auth_iam_role'] = 'IAM Role (EC2/ECS Instance Profile)';
+$lang['help_auth_method'] = 'Choose how to authenticate with AWS. Use IAM Role if running on EC2/ECS with an attached role, otherwise use Saved Credentials.';
+$lang['help_auth_credentials_only'] = 'Only required when using Saved Credentials authentication method.';
 #B
 $lang['bucket_name'] = 'Bucket Name';
 #C
@@ -125,6 +130,8 @@ $lang['region'] = 'Region';
 $lang['returntomodule'] = 'Return to Module';
 $lang['required'] = 'Required';
 $lang['refreshsuccess'] = 'Items successfully refreshed';
+$lang['settings_saved'] = 'Settings saved successfully';
+$lang['settings_validation_failed'] = 'Settings saved but connection validation failed. Please check your credentials and bucket configuration.';
 #S
 $lang['submit'] = 'Submit';
 $lang['sorry_nofiles'] = 'Sorry, we could not find any files';

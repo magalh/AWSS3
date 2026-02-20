@@ -14,6 +14,7 @@
 {AWSS3 prefix="images/"}
 {AWSS3 action=upload}
 {AWSS3 action=detail prefix="EXWD4342 (4).JPG"}
+{s3_utils::getSignedLink("prefix")}
 </pre>
 </p>
 

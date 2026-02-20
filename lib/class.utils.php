@@ -74,23 +74,41 @@ final class utils
         if(empty($settings)) return false;
 
         try {
-            $data = array('access_key','access_secret_key','bucket_name','access_region');
+            $auth_method = $this->mod->GetPreference('auth_method');
+            
+            // Only validate credentials if not using IAM role
+            if ($auth_method !== 'iam_role') {
+                $data = array('access_key','access_secret_key','bucket_name','access_region');
 
-            foreach ($data as $key)
-            {
-                $item = $this->mod->GetPreference($key);
-                if($item=="" or $item==null)
+                foreach ($data as $key)
                 {
-                    $this->errors[] = $this->lang($key). " ".$this->lang("required") ;
+                    $item = $this->mod->GetPreference($key);
+                    if($item=="" or $item==null)
+                    {
+                        $this->errors[] = $this->lang($key). " ".$this->lang("required") ;
+                    }
                 }
-            }
 
-            if(!empty($this->errors)){
-                if (count($this->errors) == 4) {
-                    return false;
+                if(!empty($this->errors)){
+                    if (count($this->errors) == 4) {
+                        return false;
+                    }
+                    throw new \AWSSDK\Exception($this->errors,"slide-danger");
                 }
-                //print_r($this->errors);
-                throw new \AWSSDK\Exception($this->errors,"slide-danger");
+            } else {
+                // For IAM role, only validate bucket_name and region
+                $data = array('bucket_name','access_region');
+                foreach ($data as $key)
+                {
+                    $item = $this->mod->GetPreference($key);
+                    if($item=="" or $item==null)
+                    {
+                        $this->errors[] = $this->lang($key). " ".$this->lang("required") ;
+                    }
+                }
+                if(!empty($this->errors)){
+                    throw new \AWSSDK\Exception($this->errors,"slide-danger");
+                }
             }
 
             $s3 = self::getS3Client();
@@ -128,15 +146,23 @@ final class utils
         $result['conn'] = true;
 
         try {
-
-            $s3Client = new S3Client([
-                'credentials' => self::get_credentials(),
+            $config = [
                 'region' => self::get_mod()->GetPreference('access_region'),
                 'version' => 'latest'
-                ]);
-
-            $buckets = $s3Client->listBuckets();
+            ];
             
+            // Only add credentials if not using EC2 IAM role
+            $credentials = self::get_credentials();
+            if ($credentials !== null) {
+                $config['credentials'] = $credentials;
+            }
+
+            $s3Client = new S3Client($config);
+            
+        } catch (\Aws\Exception\CredentialsException $e) {
+            $result['conn'] = false;
+            $result['message'] = 'IAM Role authentication failed. Ensure you are running on EC2/ECS with an attached IAM role, or switch to Saved Credentials method.';
+            return $result;
         } catch (AwsException $e) {
             $result['conn'] = false;
             $result['message'] = $e->getAwsErrorMessage();
@@ -317,8 +343,15 @@ final class utils
     }
 
     private static function get_credentials(){
-
         $mod = self::get_mod();
+        $auth_method = $mod->GetPreference('auth_method');
+        
+        // If using IAM role, return null to use instance profile
+        if ($auth_method === 'iam_role') {
+            return null;
+        }
+        
+        // Otherwise use saved credentials
         $stsClient = new StsClient([
             'version' => 'latest',
             'region' => $mod->GetPreference('access_region'),
@@ -503,6 +536,15 @@ final class utils
 
     }
 
+    public static function getSignedLink ($prefix) {
+
+        $base_url = CMS_ROOT_URL;
+        $name = \AWSSDK\encrypt::encodefilename($prefix);
+        $out = $base_url."/S3/s/".$name;
+
+        return $out;
+    }
+
     public static function getInstance()
     {
         static $instance = null;
@@ -572,13 +614,6 @@ final class utils
     public static function sortByProperty($array, $property) {
         usort($array, function($a, $b) use ($property) {
             return strcmp($a->$property, $b->$property);
-        });
-        return $array;
-    }
-
-    public static function sortByDateDesc($array) {
-        usort($array, function($a, $b) {
-            return $b->date - $a->date; // Compare dates in descending order
         });
         return $array;
     }

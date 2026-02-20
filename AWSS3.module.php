@@ -33,7 +33,7 @@ class AWSS3 extends CMSModule
 {
 	const MANAGE_PERM = 'manage_AWSS3';
 	
-	public function GetVersion() { return '1.1.1'; }
+	public function GetVersion() { return '1.2.0'; }
 	public function GetFriendlyName() { return $this->Lang('friendlyname'); }
 	public function GetAdminDescription() { return $this->Lang('admindescription'); }
 	public function IsPluginModule() { return TRUE; }
@@ -48,12 +48,31 @@ class AWSS3 extends CMSModule
     public function GetDependencies() { return ['AWSSDK' => '1.1.0','FileManager' => '1.6.13']; }
 
     public function __construct(){
+        // Load the utils class
+        spl_autoload_register([$this, '_autoloader']);
         parent::__construct();
-        //$fn = $this->GetModulePath().'/lib/class.utils.php'; require_once($fn);
-        //$smarty->registerClass('s3_utils','\AWSS3\utils');
-        $smarty = \CmsApp::get_instance()->GetSmarty();
-        if( !$smarty ) return;
+        
+        $smarty = cmsms()->GetSmarty();
+        if(!$smarty){return;}
+
         $smarty->assign('s3_mod',$this);
+        $smarty->registerClass('s3_utils', 'AWSS3\utils');
+    }
+
+    private function _autoloader($classname)
+    {
+        $parts = explode('\\', $classname);
+        $classname = end($parts);
+        
+        $fn = cms_join_path(
+            $this->GetModulePath(),
+            'lib',
+            'class.' . $classname . '.php'
+        );
+        
+        if (file_exists($fn)) {
+            require_once($fn);
+        }
     }
 
 	public function InitializeFrontend() {

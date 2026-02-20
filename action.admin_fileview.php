@@ -193,7 +193,7 @@ if ($startelement < 0 || $startelement > $endelement) {
   foreach( $selectedItems as $row ) {
       $onerow = $row;
       if($onerow->dir){
-          $sendtodetail = array('key'=>$onerow->key);
+          $sendtodetail = array('prefix'=>$onerow->key);
           if( isset( $params['pagelimit'] ) ) {
               $sendtodetail = array_merge($sendtodetail,array('pagelimit'=>$pagelimit));
           }
